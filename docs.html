@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suzuki.L-STK - ドキュメント</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .doc-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doc-section {
+            margin-bottom: 30px;
+        }
+        
+        .doc-section h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .doc-section p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .doc-section ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .doc-section li {
+            margin-bottom: 8px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <center>
+                <h1>鈴木治夫ラボ</h1>
+                <h2>-Sampling Time Keeper-</h2>
+            </center>
+            <div class="clock" id="current-time">00:00:00</div>
+        </header>
+        
+        <div class="doc-container">
+            <div class="doc-section">
+                <h2>アプリケーション概要</h2>
+                <p>Suzuki.L-STKは鈴木治夫研究室のサンプリング作業管理ツールです。複数の作業者のタスク進行状況を一元管理し、効率的な実験進行をサポートします。</p>
+            </div>
+            
+            <div class="doc-section">
+                <h2>使用方法</h2>
+                <ol>
+                    <li><strong>「Let's start Sampling!!」ボタン</strong>をクリックして開始</li>
+                    <li><strong>作業者・作業登録フォーム</strong>に情報を入力
+                        <ul>
+                            <li>作業者名：担当者の名前を入力</li>
+                            <li>作業名：実行するタスクの名前</li>
+                            <li>予定作業時間：分単位で入力</li>
+                        </ul>
+                    </li>
+                    <li><strong>「追加」ボタン</strong>で作業者とタスクを追加（複数追加可能）</li>
+                    <li>登録が完了したら<strong>「登録完了」ボタン</strong>をクリック</li>
+                    <li>作業者カードの<strong>「作業開始」ボタン</strong>でタスク開始</li>
+                    <li>作業中のステータス操作
+                        <ul>
+                            <li>「作業中」ボタンクリックでメニュー表示</li>
+                            <li>「作業を終わる」で次のタスクへ移動</li>
+                            <li>「一時停止」でタスクを一時停止</li>
+                            <li>「新規作業追加」で追加タスク登録</li>
+                        </ul>
+                    </li>
+                    <li>すべての作業完了後、<strong>「サンプリング終了」ボタン</strong>でリセット</li>
+                </ol>
+            </div>
+            
+            <div class="doc-section">
+                <h2>機能説明</h2>
+                <ul>
+                    <li><strong>リアルタイムクロック表示</strong>：現在時刻を表示</li>
+                    <li><strong>プログレスバー</strong>：タスク進行度を視覚的に表示</li>
+                    <li><strong>タスクタイマー</strong>：経過時間を表示</li>
+                    <li><strong>作業者管理</strong>：複数作業者の同時管理</li>
+                    <li><strong>タスク管理</strong>：開始、一時停止、完了の管理</li>
+                    <li><strong>完了通知</strong>：すべてのタスク完了時に通知</li>
+                </ul>
+            </div>
+            
+            <a href="index.html" class="back-link">← アプリケーションに戻る</a>
+        </div>
+    </div>
+    
+    <script>
+        // 現在時刻の表示
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        
+        // 最初のページ読み込み時に時計を更新
+        updateClock();
+        // 1秒ごとに時計を更新
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
