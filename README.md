@@ -14,7 +14,7 @@ A laboratory sampling task management web application designed for the Suzuki La
 
 ## Screenshots
 
-![Application Screenshot](screenshots/app-screenshot.png)
+![Application Screenshot](スクリーンショット 2025-05-16 19.13.09.png)
 
 ## How to Use
 
