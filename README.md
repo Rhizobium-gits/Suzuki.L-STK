@@ -14,7 +14,7 @@ A laboratory sampling task management web application designed for the Suzuki La
 
 ## Screenshots
 
-![Application Screenshot](https://github.com/Rhizobium-gits/2025-05-16 19.13.09.png.git)
+![Application Screenshot](https://github.com/Rhizobium-gits/2025-05-16.git)
 
 ## How to Use
 
