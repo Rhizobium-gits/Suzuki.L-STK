@@ -1,0 +1,21 @@
+{
+  "name": "suzuki-l-stk",
+  "version": "1.0.0",
+  "description": "Sampling Time Keeper for Suzuki Laboratory",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "laboratory",
+    "sampling",
+    "time-tracking",
+    "task-management"
+  ],
+  "author": "Suzuki Laboratory",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/suzuki-l-stk.git"
+  }
+}
