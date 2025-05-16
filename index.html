@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Suzuki.L-STK</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 90vh;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            font-weight: 600;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .clock {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+            padding: 10px 15px;
+            background-color: #f1f2f6;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .main-btn {
+            display: block;
+            width: 250px;
+            margin: 50px auto;
+            padding: 15px 25px;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        
+        .main-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+        }
+        
+        .workers-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .worker-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .worker-card.completed {
+            animation: sparkle 2s infinite alternate;
+        }
+        
+        @keyframes sparkle {
+            0% {
+                box-shadow: 0 0 5px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255, 215, 0, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 30px rgba(255, 215, 0, 0.6);
+            }
+        }
+        
+        .worker-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .task-list {
+            list-style-type: none;
+            margin-bottom: 15px;
+        }
+        
+        .task-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: #f5f7fa;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+        
+        .task-item.active {
+            background-color: rgba(52, 152, 219, 0.15);
+            border-left: 4px solid #3498db;
+        }
+        
+        .task-item .task-name {
+            font-weight: 500;
+        }
+        
+        .task-item .task-time {
+            float: right;
+            color: #7f8c8d;
+        }
+        
+        .worker-btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .worker-btn.working {
+            background-color: #2ecc71;
+        }
+        
+        .worker-btn.paused {
+            background-color: #f39c12;
+        }
+        
+        .menu-popup {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .menu-item {
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: #f5f7fa;
+        }
+        
+        .menu-item:not(:last-child) {
+            border-bottom: 1px solid #e1e4e8;
+        }
+        
+        .finish-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .finish-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #ecf0f1;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .timer {
+            text-align: right;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .task-actions {
+            margin-top: 8px;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .task-btn {
+            border: none;
+            background: none;
+            color: #3498db;
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 2px 5px;
+        }
+        
+        .task-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+          <h1>鈴木治夫ラボ</h1><h2>-Sampling Time Keeper-</h2>
+            <div class="clock" id="current-time">00:00:00</div>
+        </header>
+        
+        <button id="start-sampling" class="main-btn">Let's start Sampling!!</button>
+        
+        <div id="registration-form" class="form-container">
+            <h2>作業者・作業登録</h2>
+            <div class="input-group">
+                <label for="worker-name">作業者名</label>
+                <input type="text" id="worker-name" placeholder="作業者名を入力">
+            </div>
+            <div class="input-group">
+                <label for="task-name">作業名</label>
+                <input type="text" id="task-name" placeholder="作業名を入力">
+            </div>
+            <div class="input-group">
+                <label for="task-time">予定作業時間（分）</label>
+                <input type="number" id="task-time" placeholder="予定時間を入力" min="1">
+            </div>
+            <button id="add-task" class="main-btn">追加</button>
+            <button id="finish-registration" class="main-btn" style="background: #2ecc71; margin-top: 10px;">登録完了</button>
+        </div>
+        
+        <div id="workers-container" class="workers-container"></div>
+        
+        <button id="finish-sampling" class="finish-btn" style="display: none;">サンプリング終了</button>
+    </div>
+    
+    <script>
+        // グローバル変数
+        let workers = [];
+        let timers = {};
+        
+        // 現在時刻の表示
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        
+        // 最初のページ読み込み時に時計を更新
+        updateClock();
+        // 1秒ごとに時計を更新
+        setInterval(updateClock, 1000);
+        
+        // サンプリング開始ボタンのイベントリスナー
+        document.getElementById('start-sampling').addEventListener('click', function() {
+            this.style.display = 'none';
+            document.getElementById('registration-form').style.display = 'block';
+            document.getElementById('finish-sampling').style.display = 'block';
+        });
+        
+        // 作業追加ボタンのイベントリスナー
+        document.getElementById('add-task').addEventListener('click', function() {
+            const workerName = document.getElementById('worker-name').value.trim();
+            const taskName = document.getElementById('task-name').value.trim();
+            const taskTime = parseInt(document.getElementById('task-time').value);
+            
+            if (!workerName || !taskName || isNaN(taskTime) || taskTime <= 0) {
+                alert('すべての項目を正しく入力してください。');
+                return;
+            }
+            
+            // 既存の作業者かチェック
+            let worker = workers.find(w => w.name === workerName);
+            
+            if (!worker) {
+                // 新しい作業者を追加
+                worker = {
+                    name: workerName,
+                    tasks: [],
+                    currentTaskIndex: null,
+                    status: 'ready' // ready, working, paused, completed
+                };
+                workers.push(worker);
+            }
+            
+            // 作業を追加
+            worker.tasks.push({
+                name: taskName,
+                estimatedTime: taskTime * 60, // 分から秒に変換
+                elapsedTime: 0,
+                status: 'pending' // pending, active, paused, completed
+            });
+            
+            // フォームをクリア
+            document.getElementById('worker-name').value = workerName; // 作業者名は残す
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-time').value = '';
+            
+            alert('作業が追加されました。');
+        });
+        
+        // 登録完了ボタンのイベントリスナー
+        document.getElementById('finish-registration').addEventListener('click', function() {
+            if (workers.length === 0) {
+                alert('少なくとも1つの作業を追加してください。');
+                return;
+            }
+            
+            document.getElementById('registration-form').style.display = 'none';
+            renderWorkers();
+        });
+        
+        // 作業者カードをレンダリング
+        function renderWorkers() {
+            const container = document.getElementById('workers-container');
+            container.innerHTML = '';
+            
+            workers.forEach((worker, workerIndex) => {
+                const card = document.createElement('div');
+                card.className = `worker-card ${worker.status === 'completed' ? 'completed' : ''}`;
+                card.id = `worker-${workerIndex}`;
+                
+                // 作業者名
+                const nameElement = document.createElement('div');
+                nameElement.className = 'worker-name';
+                nameElement.textContent = worker.name;
+                card.appendChild(nameElement);
+                
+                // タスクリスト
+                const taskList = document.createElement('ul');
+                taskList.className = 'task-list';
+                
+                worker.tasks.forEach((task, taskIndex) => {
+                    const taskItem = document.createElement('li');
+                    taskItem.className = `task-item ${taskIndex === worker.currentTaskIndex ? 'active' : ''}`;
+                    
+                    const taskContent = document.createElement('div');
+                    taskContent.innerHTML = `
+                        <span class="task-name">${task.name}</span>
+                        <span class="task-time">${formatTime(task.estimatedTime)}</span>
+                    `;
+                    taskItem.appendChild(taskContent);
+                    
+                    // アクティブなタスクの場合、プログレスバーとタイマーを追加
+                    if (taskIndex === worker.currentTaskIndex) {
+                        const timer = document.createElement('div');
+                        timer.className = 'timer';
+                        timer.id = `timer-${workerIndex}-${taskIndex}`;
+                        timer.textContent = formatTime(task.elapsedTime);
+                        taskItem.appendChild(timer);
+                        
+                        const progressBarContainer = document.createElement('div');
+                        progressBarContainer.className = 'progress-bar';
+                        
+                        const progressBar = document.createElement('div');
+                        progressBar.className = 'progress';
+                        progressBar.id = `progress-${workerIndex}-${taskIndex}`;
+                        progressBar.style.width = `${(task.elapsedTime / task.estimatedTime) * 100}%`;
+                        
+                        progressBarContainer.appendChild(progressBar);
+                        taskItem.appendChild(progressBarContainer);
+                    }
+                    
+                    taskList.appendChild(taskItem);
+                });
+                
+                card.appendChild(taskList);
+                
+                // ボタン
+                const button = document.createElement('button');
+                button.className = `worker-btn ${getButtonClass(worker.status)}`;
+                button.textContent = getButtonText(worker.status);
+                button.dataset.workerIndex = workerIndex;
+                button.addEventListener('click', handleWorkerButtonClick);
+                card.appendChild(button);
+                
+                // メニューポップアップ
+                const menuPopup = document.createElement('div');
+                menuPopup.className = 'menu-popup';
+                menuPopup.id = `menu-${workerIndex}`;
+                
+                const finishMenuItem = document.createElement('div');
+                finishMenuItem.className = 'menu-item';
+                finishMenuItem.textContent = '作業を終わる';
+                finishMenuItem.dataset.action = 'finish';
+                finishMenuItem.dataset.workerIndex = workerIndex;
+                finishMenuItem.addEventListener('click', handleMenuItemClick);
+                
+                const pauseMenuItem = document.createElement('div');
+                pauseMenuItem.className = 'menu-item';
+                pauseMenuItem.textContent = '一時停止';
+                pauseMenuItem.dataset.action = 'pause';
+                pauseMenuItem.dataset.workerIndex = workerIndex;
+                pauseMenuItem.addEventListener('click', handleMenuItemClick);
+                
+                const addTaskMenuItem = document.createElement('div');
+                addTaskMenuItem.className = 'menu-item';
+                addTaskMenuItem.textContent = '新規作業追加';
+                addTaskMenuItem.dataset.action = 'add-task';
+                addTaskMenuItem.dataset.workerIndex = workerIndex;
+                addTaskMenuItem.addEventListener('click', handleMenuItemClick);
+                
+                menuPopup.appendChild(finishMenuItem);
+                menuPopup.appendChild(pauseMenuItem);
+                menuPopup.appendChild(addTaskMenuItem);
+                
+                card.appendChild(menuPopup);
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // ボタンクラスを取得
+        function getButtonClass(status) {
+            switch (status) {
+                case 'working': return 'working';
+                case 'paused': return 'paused';
+                default: return '';
+            }
+        }
+        
+        // ボタンテキストを取得
+        function getButtonText(status) {
+            switch (status) {
+                case 'ready': return '作業開始';
+                case 'working': return '作業中';
+                case 'paused': return '一時停止';
+                case 'completed': return '完了';
+                default: return '作業開始';
+            }
+        }
+        
+        // 作業者ボタンクリックハンドラ
+        function handleWorkerButtonClick(event) {
+            const workerIndex = parseInt(event.target.dataset.workerIndex);
+            const worker = workers[workerIndex];
+            
+            if (worker.status === 'ready') {
+                // 作業開始
+                startTask(workerIndex);
+            } else if (worker.status === 'working') {
+                // メニューを表示
+                const menuId = `menu-${workerIndex}`;
+                document.getElementById(menuId).style.display = 'block';
+            } else if (worker.status === 'paused') {
+                // 作業再開
+                resumeTask(workerIndex);
+            }
+        }
+        
+        // メニューアイテムクリックハンドラ
+        function handleMenuItemClick(event) {
+            const action = event.target.dataset.action;
+            const workerIndex = parseInt(event.target.dataset.workerIndex);
+            const worker = workers[workerIndex];
+            const menuId = `menu-${workerIndex}`;
+            
+            // メニューを隠す
+            document.getElementById(menuId).style.display = 'none';
+            
+            switch (action) {
+                case 'finish':
+                    finishCurrentTask(workerIndex);
+                    break;
+                case 'pause':
+                    pauseTask(workerIndex);
+                    break;
+                case 'add-task':
+                    showAddTaskDialog(workerIndex);
+                    break;
+            }
+        }
+        
+        // 作業開始
+        function startTask(workerIndex) {
+            const worker = workers[workerIndex];
+            
+            // 最初のタスクを開始
+            if (worker.currentTaskIndex === null && worker.tasks.length > 0) {
+                worker.currentTaskIndex = 0;
+            }
+            
+            if (worker.currentTaskIndex !== null) {
+                worker.status = 'working';
+                worker.tasks[worker.currentTaskIndex].status = 'active';
+                
+                // タイマーを開始
+                startTimer(workerIndex);
+                
+                renderWorkers();
+            }
+        }
+        
+        // 作業一時停止
+        function pauseTask(workerIndex) {
+            const worker = workers[workerIndex];
+            
+            if (worker.status === 'working' && worker.currentTaskIndex !== null) {
+                worker.status = 'paused';
+                worker.tasks[worker.currentTaskIndex].status = 'paused';
+                
+                // タイマーを停止
+                stopTimer(workerIndex);
+                
+                renderWorkers();
+            }
+        }
+        
+        // 作業再開
+        function resumeTask(workerIndex) {
+            const worker = workers[workerIndex];
+            
+            if (worker.status === 'paused' && worker.currentTaskIndex !== null) {
+                worker.status = 'working';
+                worker.tasks[worker.currentTaskIndex].status = 'active';
+                
+                // タイマーを再開
+                startTimer(workerIndex);
+                
+                renderWorkers();
+            }
+        }
+        
+        // 現在の作業を終了
+        function finishCurrentTask(workerIndex) {
+            const worker = workers[workerIndex];
+            
+            if (worker.currentTaskIndex !== null) {
+                // 現在のタスクを完了状態に
+                const currentTaskIndex = worker.currentTaskIndex;
+                worker.tasks[currentTaskIndex].status = 'completed';
+                
+                // タイマーを停止
+                stopTimer(workerIndex);
+                
+                // 次のタスクを探す
+                let nextTaskIndex = null;
+                for (let i = 0; i < worker.tasks.length; i++) {
+                    if (worker.tasks[i].status === 'pending') {
+                        nextTaskIndex = i;
+                        break;
+                    }
+                }
+                
+                if (nextTaskIndex !== null) {
+                    // 次のタスクがある場合
+                    worker.currentTaskIndex = nextTaskIndex;
+                    worker.status = 'ready';
+                } else {
+                    // すべてのタスクが完了した場合
+                    worker.currentTaskIndex = null;
+                    worker.status = 'completed';
+                }
+                
+                renderWorkers();
+                
+                // すべての作業者が完了したかチェック
+                checkAllWorkersCompleted();
+            }
+        }
+        
+        // 新規作業追加ダイアログを表示
+        function showAddTaskDialog(workerIndex) {
+            const worker = workers[workerIndex];
+            
+            const taskName = prompt('新しい作業名を入力してください:');
+            if (!taskName) return;
+            
+            const taskTimeStr = prompt('予定作業時間（分）を入力してください:');
+            const taskTime = parseInt(taskTimeStr);
+            
+            if (isNaN(taskTime) || taskTime <= 0) {
+                alert('有効な作業時間を入力してください。');
+                return;
+            }
+            
+            // 新しいタスクを追加
+            worker.tasks.push({
+                name: taskName,
+                estimatedTime: taskTime * 60, // 分から秒に変換
+                elapsedTime: 0,
+                status: 'pending'
+            });
+            
+            renderWorkers();
+        }
+        
+        // タイマーを開始
+        function startTimer(workerIndex) {
+            const worker = workers[workerIndex];
+            const taskIndex = worker.currentTaskIndex;
+            
+            if (taskIndex === null) return;
+            
+            // 既存のタイマーを停止
+            stopTimer(workerIndex);
+            
+            // 新しいタイマーを開始
+            timers[workerIndex] = setInterval(() => {
+                const task = worker.tasks[taskIndex];
+                task.elapsedTime++;
+                
+                // タイマー表示を更新
+                const timerElement = document.getElementById(`timer-${workerIndex}-${taskIndex}`);
+                if (timerElement) {
+                    timerElement.textContent = formatTime(task.elapsedTime);
+                }
+                
+                // プログレスバーを更新
+                const progressElement = document.getElementById(`progress-${workerIndex}-${taskIndex}`);
+                if (progressElement) {
+                    const progress = Math.min((task.elapsedTime / task.estimatedTime) * 100, 100);
+                    progressElement.style.width = `${progress}%`;
+                }
+            }, 1000);
+        }
+        
+        // タイマーを停止
+        function stopTimer(workerIndex) {
+            if (timers[workerIndex]) {
+                clearInterval(timers[workerIndex]);
+                delete timers[workerIndex];
+            }
+        }
+        
+        // すべての作業者が完了したかチェック
+        function checkAllWorkersCompleted() {
+            const allCompleted = workers.every(worker => worker.status === 'completed');
+            if (allCompleted) {
+                alert('すべての作業者が作業を完了しました！');
+            }
+        }
+        
+        // 時間を整形
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+        
+        // サンプリング終了ボタンのイベントリスナー
+        document.getElementById('finish-sampling').addEventListener('click', function() {
+            if (confirm('サンプリングを終了しますか？')) {
+                // すべてのタイマーを停止
+                for (const workerIndex in timers) {
+                    stopTimer(workerIndex);
+                }
+                
+                // 最初の状態に戻す
+                workers = [];
+                document.getElementById('workers-container').innerHTML = '';
+                document.getElementById('start-sampling').style.display = 'block';
+                document.getElementById('finish-sampling').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
